@@ -132,7 +132,7 @@ def generator() -> None:
                 metadata["downvote_count"],
                 metadata["comment_count"],
                 metadata["created_at"],
-                metadata["updated_at"],
+                metadata["updated_at"] if len(metadata["updated_at"]) != 0 else "Not updated yet",
                 metadata["platform"],
                 metadata["account"]["username"],
                 metadata["account"]["id"],
@@ -151,13 +151,17 @@ $$$,     $$$$$$$$$c   c$$$cc$$$c $$$          $$'     $$\"\"\"\"
 """)
 
     print("Hooking signal handler...")
-    signal.signal(signal.SIGINT, signal_handler)
+    signal.signal(
+        signal.SIGINT,
+        signal_handler
+    )
 
     print("Starting threads...")
     try:
         for _ in range(threads):
             t = Thread(
-                target=generator
+                target=generator,
+                daemon=False
             )
 
             threadbox.append(t)
